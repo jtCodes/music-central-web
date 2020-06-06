@@ -1,3 +1,23 @@
-.lyrcis-editor {
-    background-color: rgba(0, 0, 0, 0.534);
+.lyrcis-editor-container {
+  background-color: rgba(0, 0, 0, 0.534);
+}
+
+.lyrics-editor-waveform-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+
+#wave-timeline {
+    height: 50px;
+    width: 100vw;
+    /* align-self: flex-end; */
+}
+
+#waveform {
+  width: 100%;
+  /* align-self: flex-end; */
+  margin-bottom: 30px;
 }
