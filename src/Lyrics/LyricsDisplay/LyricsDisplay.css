@@ -1,0 +1,11 @@
+.lyrics-display-container {
+    display: flex;
+    margin-top: 50px;
+}
+
+.lyrics-chunk-container {
+    color: rgba(255, 255, 255, 0.945);
+    font-size: x-large;
+    font-weight: 900;
+    align-self: center;
+}
