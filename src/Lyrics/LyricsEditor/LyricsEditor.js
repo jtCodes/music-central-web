@@ -1,30 +1,49 @@
 import React, { Component } from "react";
 import WaveSurfer from "wavesurfer.js";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
+import RegionPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min.js";
 import ClipLoader from "react-spinners/ClipLoader";
 import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js";
 import "./LyricsEditor.css";
+import Slider, { Range } from "rc-slider";
+import "rc-slider/assets/index.css";
+import { Editor, EditorState } from "draft-js";
+import "draft-js/dist/Draft.css";
+import { FaSave } from "react-icons/fa";
+import { FirebaseContext } from "../../Firebase";
 
 class LyricsEditor extends Component {
   constructor(props) {
     super(props);
 
+    this.lyricTextAreaRef = React.createRef();
+
     this.state = {
       isWaveFormReady: false,
+      isAddLyricMode: false,
+      currentRegionLyric: "",
+      curZoomValue: 0,
+      songDuration: null,
+      editorState: EditorState.createEmpty(),
     };
 
-    this.onSpaceBarPress = this.onSpaceBarPress.bind(this);
+    this.sliderMin = null;
+
+    this.onKeyDown = this.onKeyDown.bind(this);
+
+    this.onChange = (editorState) =>
+      this.setState({ ...this.state, editorState });
   }
 
   componentDidMount() {
-    document.addEventListener("keydown", this.onSpaceBarPress, false);
+    document.addEventListener("keydown", this.onKeyDown, false);
 
     this.waveform = WaveSurfer.create({
       container: "#waveform",
-      waveColor: "#82b3c9",
-      progressColor: "#4ba3c7",
+      waveColor: "#66bb6a",
+      progressColor: "#66bb6a",
       responsive: true,
-      cursorColor: 'white',
+      cursorColor: "#ffc400",
       plugins: [
         TimelinePlugin.create({
           container: "#wave-timeline",
@@ -34,57 +53,200 @@ class LyricsEditor extends Component {
         CursorPlugin.create({
           showTime: true,
           opacity: 0.9,
-          color: 'white',
+          color: "#ff6659",
           customShowTimeStyle: {
             "background-color": "#000",
             color: "#fff",
             padding: "2px",
-            "font-size": "10px",
+            "font-size": "12px",
+          },
+        }),
+        RegionPlugin.create({
+          regions: [],
+          dragSelection: {
+            slop: 5,
+          },
+          enableDragSelection: {
+            color: "hsla(400, 100%, 30%, 0.5)",
           },
         }),
       ],
     });
 
+    this.firebase.getSongLyrics("the world of mercy").once(
+      "value",
+      (snapshot) => {
+        console.log(snapshot.val());
+        this.loadRegions(JSON.parse(snapshot.val().lyrics));
+      },
+      (errorObject) => {
+        console.log("The read failed: " + errorObject.code);
+      }
+    );
+    // if (localStorage.regions) {
+    //   this.loadRegions(JSON.parse(localStorage.regions));
+    // }
+
     this.waveform.load(this.props.url);
     this.waveform.on("ready", () => {
+      this.sliderMin = this.waveform.params.minPxPerSec;
       this.setState({
         isWaveFormReady: true,
+        songDuration: this.waveform.getDuration(),
       });
     });
-    this.waveform.on('seek', () => {
-      console.log(this.waveform.getCurrentTime())
-    })
+    this.waveform.on("seek", () => {});
+    this.waveform.on("region-click", (regionObj) => {
+      this.waveform.pause();
+      this.setState({ ...this.state, isAddLyricMode: true });
+      this.editingRegion = regionObj;
+      // regionObj.update({
+      //   data: {
+      //     note: "lol",
+      //   },
+      // });
+    });
+    this.waveform.on("region-update-end", (regionObj) => {
+      console.log(regionObj);
+    });
+
+    this.waveform.on("region-in", (regionObj) => {
+      this.setState({ ...this.state, currentRegionLyric: regionObj.data.note });
+      console.log(regionObj.data.note);
+    });
+
+    this.waveform.on("region-out", (regionObj) => {
+      this.setState({ ...this.state, currentRegionLyric: " " });
+    });
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.onSpaceBarPress, false);
+    document.removeEventListener("keydown", this.onKeyDown, false);
   }
 
-  onSpaceBarPress(event) {
+  onKeyDown(event) {
     if (event.keyCode === 32) {
       this.waveform.isPlaying() ? this.waveform.pause() : this.waveform.play();
+    } else if (event.keyCode === 84) {
+      console.log(this.waveform.getCurrentTime());
     }
   }
 
+  /**
+   * Save annotations to localStorage.
+   */
+  saveRegions = () => {
+    const stringifiedLyricsData = JSON.stringify(
+      Object.keys(this.waveform.regions.list).map((id) => {
+        const region = this.waveform.regions.list[id];
+        return {
+          start: region.start,
+          end: region.end,
+          attributes: region.attributes,
+          data: region.data,
+        };
+      })
+    );
+
+    this.firebase.setSongLyrics("the world of mercy", stringifiedLyricsData);
+
+    localStorage.regions = stringifiedLyricsData;
+  };
+
+  loadRegions(regions) {
+    regions.forEach((region) => {
+      this.waveform.addRegion(region);
+    });
+  }
+
+  handleSaveLyricRegionBtnClick = (event) => {
+    event.preventDefault();
+    this.setState({ ...this.state, isAddLyricMode: false });
+    this.editingRegion.update({
+      data: {
+        note: this.lyricTextAreaRef.current.value,
+      },
+    });
+
+    this.saveRegions();
+    console.log(localStorage.regions);
+  };
+
+  handleSliderChanging = (newValue) => {
+    this.setState({ ...this.state, curZoomValue: newValue });
+    this.waveform.zoom(Number(newValue));
+    console.log(newValue);
+  };
+
+  handleSaveRegionsBtnClick = () => {
+    console.log("haha");
+    this.saveRegions();
+  };
+
   render() {
-    const { isWaveFormReady } = this.state;
+    const {
+      isWaveFormReady,
+      isAddLyricMode,
+      currentRegionLyric,
+      songDuration,
+      curZoomValue,
+    } = this.state;
 
     return (
       <div className="lyrcis-editor-container ms-100vw ms-100vh">
+        {!this.firebase ? (
+          <FirebaseContext.Consumer>
+            {(firebase) => {
+              this.firebase = firebase;
+            }}
+          </FirebaseContext.Consumer>
+        ) : null}
+        <div
+          className="save-regions-btn"
+          onClick={this.handleSaveRegionsBtnClick}
+        >
+          <FaSave size={30} color={"white"} />
+        </div>
+        <div className="lyrics-text-editor">
+          <Editor
+            editorState={this.state.editorState}
+            onChange={this.onChange}
+          />
+        </div>
         <div className="lyrics-editor-waveform-container">
           {/* <div></div> */}
-          <div style={{ alignSelf: "flex-end" }}>
-            <div id="wave-timeline"></div>
-            <div id="waveform"></div>
-          </div>
+          {!isWaveFormReady ? (
+            <ClipLoader
+              size={150}
+              color={"#baeabc"}
+              loading={this.state.loading}
+            />
+          ) : null}
+          <div className="current-lyric-chunk">{currentRegionLyric}</div>
+          {isAddLyricMode ? (
+            <div>
+              <textarea
+                ref={this.lyricTextAreaRef}
+                value={this.state.value}
+                // onChange={this.handleChange}
+              />
+              <div
+                className="lyric-submit-btn"
+                onClick={this.handleSaveLyricRegionBtnClick}
+              />
+            </div>
+          ) : null}
+          <div className="media-controls-slider-container">
+            <Slider
+              min={0}
+              max={50}
+              value={curZoomValue}
+              onChange={this.handleSliderChanging}
+            />
+          </div>{" "}
+          <div id="wave-timeline"></div>
+          <div id="waveform"></div>
         </div>
-        {!isWaveFormReady ? (
-          <ClipLoader
-            size={150}
-            color={"#baeabc"}
-            loading={this.state.loading}
-          />
-        ) : null}
       </div>
     );
   }
