@@ -6,7 +6,7 @@ import "./App.css";
 import SoundManager from "./SoundManager";
 import backgroundImage from "./img1.webp";
 import BackgroundImage from "./BackgroundImage";
-import MediaControls from "./MediaControls";
+import MediaControls from "./MediaControls/MediaControls";
 import LyricsDisplay from "./Lyrics/LyricsDisplay/LyricsDisplay";
 import lyricsData from "./Lyrics/test.json";
 import { FaEdit } from "react-icons/fa";
