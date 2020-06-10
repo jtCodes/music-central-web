@@ -1,0 +1,57 @@
+.lyrcis-editor-container {
+  background-color: rgba(0, 0, 0, 0.534);
+}
+
+.lyrics-editor-waveform-container {
+  /* height: 100%; */
+  position: absolute;
+  bottom: 0px;
+}
+
+#wave-timeline {
+  height: 50px;
+  width: 100vw;
+  cursor: pointer;
+  /* align-self: flex-end; */
+}
+
+#waveform {
+  width: 100%;
+  /* align-self: flex-end; */
+  margin-bottom: 30px;
+}
+
+.wavesurfer-region {
+  z-index: 3 !important;
+  background-color: rgba(195, 138, 138, 0.39) !important;
+}
+
+.lyric-region-save-btn {
+  width: 50px;
+  height: 100px;
+  background-color: rgb(85, 141, 80);
+}
+
+.lyric-region-remove-btn {
+  width: 50px;
+  height: 100px;
+  background-color: rgb(105, 33, 33);
+}
+
+.current-lyric-chunk {
+  color: white;
+}
+
+.lyrics-text-editor {
+  width: 600px;
+  height: 600px;
+  color: white;
+  border: solid;
+  overflow-y: scroll;
+  margin-bottom: 200px;
+}
+
+.save-regions-btn {
+  cursor: pointer;
+  width: max-content;
+}
