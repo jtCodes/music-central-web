@@ -29,10 +29,11 @@ class LyricsEditor extends Component {
     };
 
     this.sliderMin = null;
+    this.isRegionOnTopOfSeekLocation = false;
 
     this.onKeyDown = this.onKeyDown.bind(this);
 
-    this.onChange = (editorState) =>
+    this.onLyricsEditorChange = (editorState) =>
       this.setState({ ...this.state, editorState });
   }
 
@@ -97,12 +98,19 @@ class LyricsEditor extends Component {
         songDuration: this.waveform.getDuration(),
       });
     });
-    this.waveform.on("seek", () => {});
+    this.waveform.on("seek", () => {
+      if (!this.isRegionOnTopOfSeekLocation) {
+        this.editingRegion = null;
+        this.setState({ ...this.state, isAddLyricMode: false });
+      }
+
+      this.isRegionOnTopOfSeekLocation = false;
+    });
     this.waveform.on("region-click", (regionObj) => {
       this.waveform.pause();
       this.setState({ ...this.state, isAddLyricMode: true });
       this.editingRegion = regionObj;
-      console.log(regionObj);
+      this.isRegionOnTopOfSeekLocation = true;
       // regionObj.update({
       //   data: {
       //     note: "lol",
@@ -214,6 +222,7 @@ class LyricsEditor extends Component {
             }}
           </FirebaseContext.Consumer>
         ) : null}
+
         <div
           className="save-regions-btn"
           onClick={this.handleSaveAllRegionsBtnClick}
@@ -225,7 +234,7 @@ class LyricsEditor extends Component {
           <div className="lyrics-text-editor">
             <Editor
               editorState={this.state.editorState}
-              onChange={this.onChange}
+              onChange={this.onLyricsEditorChange}
             />
           </div>
           <div className="ms-col">
