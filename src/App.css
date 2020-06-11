@@ -124,3 +124,7 @@
 .ms-button {
   cursor: pointer;
 }
+
+.ms-row {
+  display: flex;
+}

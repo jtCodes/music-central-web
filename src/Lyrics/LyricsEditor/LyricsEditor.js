@@ -11,6 +11,7 @@ import { Editor, EditorState } from "draft-js";
 import "draft-js/dist/Draft.css";
 import { FaSave } from "react-icons/fa";
 import { FirebaseContext } from "../../Firebase";
+import LyricsRegionEditor from "./LyricsRegionEditor/LyricsRegionEditor";
 
 class LyricsEditor extends Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class LyricsEditor extends Component {
       progressColor: "#66bb6a",
       responsive: true,
       cursorColor: "#ffc400",
+      partialRender: true,
       plugins: [
         TimelinePlugin.create({
           container: "#wave-timeline",
@@ -160,21 +162,21 @@ class LyricsEditor extends Component {
     });
   }
 
-  handleSaveLyricRegionBtnClick = (event) => {
-    event.preventDefault();
+  onSaveLyricRegionBtnClick = (value) => {
     this.setState({ ...this.state, isAddLyricMode: false });
-    this.editingRegion.update({
-      data: {
-        note: this.lyricTextAreaRef.current.value,
-      },
-    });
+    if (value) {
+      this.editingRegion.update({
+        data: {
+          note: value,
+        },
+      });
+      this.saveRegions();
+    }
 
-    this.saveRegions();
     this.editingRegion = null;
   };
 
-  handleRemoveLyricRegionBtnClick = (event) => {
-    event.preventDefault();
+  onRemoveLyricRegionBtnClick = (event) => {
     this.setState({ ...this.state, isAddLyricMode: false });
     if (this.editingRegion.id) {
       this.waveform.regions.list[this.editingRegion.id].remove();
@@ -218,38 +220,34 @@ class LyricsEditor extends Component {
         >
           <FaSave size={30} color={"white"} />
         </div>
-        <div className="lyrics-text-editor">
-          <Editor
-            editorState={this.state.editorState}
-            onChange={this.onChange}
-          />
+
+        <div className="ms-row">
+          <div className="lyrics-text-editor">
+            <Editor
+              editorState={this.state.editorState}
+              onChange={this.onChange}
+            />
+          </div>
+          <div className="ms-col">
+            {isAddLyricMode ? (
+              <div className="lyrics-region-editing-section">
+                <LyricsRegionEditor
+                  onRemoveLyricRegionBtnClick={this.onRemoveLyricRegionBtnClick}
+                  onSaveLyricRegionBtnClick={this.onSaveLyricRegionBtnClick}
+                />
+              </div>
+            ) : null}
+            <div className="current-lyric-chunk">{currentRegionLyric}</div>
+          </div>
         </div>
+
         <div className="lyrics-editor-waveform-container">
-          {/* <div></div> */}
           {!isWaveFormReady ? (
             <ClipLoader
               size={150}
               color={"#baeabc"}
               loading={this.state.loading}
             />
-          ) : null}
-          <div className="current-lyric-chunk">{currentRegionLyric}</div>
-          {isAddLyricMode ? (
-            <div>
-              <textarea
-                ref={this.lyricTextAreaRef}
-                value={this.state.value}
-                // onChange={this.handleChange}
-              />
-              <div
-                className="lyric-region-save-btn"
-                onClick={this.handleSaveLyricRegionBtnClick}
-              />
-              <div
-                className="lyric-region-remove-btn"
-                onClick={this.handleRemoveLyricRegionBtnClick}
-              />
-            </div>
           ) : null}
           <div className="media-controls-slider-container">
             <Slider
