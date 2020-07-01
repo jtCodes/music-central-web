@@ -101,21 +101,24 @@ class LyricsEditor extends Component {
     this.waveform.on("seek", () => {
       if (!this.isRegionOnTopOfSeekLocation) {
         this.editingRegion = null;
-        this.setState({ ...this.state, isAddLyricMode: false });
+        this.setState({
+          ...this.state,
+          isAddLyricMode: false,
+          currentRegionLyric: " ",
+        });
       }
 
       this.isRegionOnTopOfSeekLocation = false;
     });
     this.waveform.on("region-click", (regionObj) => {
       this.waveform.pause();
-      this.setState({ ...this.state, isAddLyricMode: true });
+      this.setState({
+        ...this.state,
+        isAddLyricMode: true,
+        currentRegionLyric: regionObj.data.note,
+      });
       this.editingRegion = regionObj;
       this.isRegionOnTopOfSeekLocation = true;
-      // regionObj.update({
-      //   data: {
-      //     note: "lol",
-      //   },
-      // });
     });
     this.waveform.on("region-update-end", (regionObj) => {
       console.log(regionObj);
@@ -127,7 +130,12 @@ class LyricsEditor extends Component {
     });
 
     this.waveform.on("region-out", (regionObj) => {
-      this.setState({ ...this.state, currentRegionLyric: " " });
+      this.editingRegion = null;
+      this.setState({
+        ...this.state,
+        currentRegionLyric: " ",
+        isAddLyricMode: false,
+      });
     });
   }
 
@@ -230,23 +238,31 @@ class LyricsEditor extends Component {
           <FaSave size={30} color={"white"} />
         </div>
 
-        <div className="ms-row">
-          <div className="lyrics-text-editor">
+        <div className="ms-row" style={{ justifyContent: "space-between" }}>
+          <div className="lyrics-text-editor ms-50vw">
             <Editor
               editorState={this.state.editorState}
               onChange={this.onLyricsEditorChange}
             />
           </div>
-          <div className="ms-col">
-            {isAddLyricMode ? (
-              <div className="lyrics-region-editing-section">
-                <LyricsRegionEditor
-                  onRemoveLyricRegionBtnClick={this.onRemoveLyricRegionBtnClick}
-                  onSaveLyricRegionBtnClick={this.onSaveLyricRegionBtnClick}
-                />
+          <div className="ms-col ms-50vw" style={{ height: 600 }}>
+            <div className="lyrics-region-display-section">
+              {isAddLyricMode ? (
+                <div className="lyrics-region-editing-section">
+                  <LyricsRegionEditor
+                    onRemoveLyricRegionBtnClick={
+                      this.onRemoveLyricRegionBtnClick
+                    }
+                    onSaveLyricRegionBtnClick={this.onSaveLyricRegionBtnClick}
+                  />
+                </div>
+              ) : null}
+              <div className="current-lyrics-region-display-container">
+                <div className="current-lyric-chunk">
+                  <div>{currentRegionLyric}</div>
+                </div>
               </div>
-            ) : null}
-            <div className="current-lyric-chunk">{currentRegionLyric}</div>
+            </div>
           </div>
         </div>
 

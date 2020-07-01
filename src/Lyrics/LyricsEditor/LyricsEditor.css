@@ -38,10 +38,6 @@
   background-color: rgb(105, 33, 33);
 }
 
-.current-lyric-chunk {
-  color: white;
-}
-
 .lyrics-text-editor {
   width: 600px;
   height: 600px;
@@ -54,4 +50,21 @@
 .save-regions-btn {
   cursor: pointer;
   width: max-content;
+}
+
+.lyrics-region-editing-section {
+  position: absolute;
+  height: max-content;
+  z-index: 2;
+}
+
+.current-lyrics-region-display-container {
+  position: absolute;
+}
+
+.current-lyric-chunk {
+  color: white;
+  display: flex;
+  align-items: center;
+  height: 600px;
 }
