@@ -1,0 +1,27 @@
+.media-controls-container {
+
+}
+
+.media-controls-time-label{
+    color: white;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.media-controls-slider-container {
+    display: flex;
+    justify-content: center;
+    width: 60vw;
+}
+
+.media-controls-bottom-row {
+    display: flex;
+    /* justify-content: center; */
+    justify-content: space-between;
+}
+
+.play-pause-btn {
+    width: 25px;
+}

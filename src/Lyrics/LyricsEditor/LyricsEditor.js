@@ -11,6 +11,7 @@ import { Editor, EditorState } from "draft-js";
 import "draft-js/dist/Draft.css";
 import { FaSave } from "react-icons/fa";
 import { FirebaseContext } from "../../Firebase";
+import LyricsRegionEditor from "./LyricsRegionEditor/LyricsRegionEditor";
 
 class LyricsEditor extends Component {
   constructor(props) {
@@ -28,10 +29,11 @@ class LyricsEditor extends Component {
     };
 
     this.sliderMin = null;
+    this.isRegionOnTopOfSeekLocation = false;
 
     this.onKeyDown = this.onKeyDown.bind(this);
 
-    this.onChange = (editorState) =>
+    this.onLyricsEditorChange = (editorState) =>
       this.setState({ ...this.state, editorState });
   }
 
@@ -44,6 +46,7 @@ class LyricsEditor extends Component {
       progressColor: "#66bb6a",
       responsive: true,
       cursorColor: "#ffc400",
+      partialRender: true,
       plugins: [
         TimelinePlugin.create({
           container: "#wave-timeline",
@@ -95,16 +98,27 @@ class LyricsEditor extends Component {
         songDuration: this.waveform.getDuration(),
       });
     });
-    this.waveform.on("seek", () => {});
+    this.waveform.on("seek", () => {
+      if (!this.isRegionOnTopOfSeekLocation) {
+        this.editingRegion = null;
+        this.setState({
+          ...this.state,
+          isAddLyricMode: false,
+          currentRegionLyric: " ",
+        });
+      }
+
+      this.isRegionOnTopOfSeekLocation = false;
+    });
     this.waveform.on("region-click", (regionObj) => {
       this.waveform.pause();
-      this.setState({ ...this.state, isAddLyricMode: true });
+      this.setState({
+        ...this.state,
+        isAddLyricMode: true,
+        currentRegionLyric: regionObj.data.note,
+      });
       this.editingRegion = regionObj;
-      // regionObj.update({
-      //   data: {
-      //     note: "lol",
-      //   },
-      // });
+      this.isRegionOnTopOfSeekLocation = true;
     });
     this.waveform.on("region-update-end", (regionObj) => {
       console.log(regionObj);
@@ -116,7 +130,12 @@ class LyricsEditor extends Component {
     });
 
     this.waveform.on("region-out", (regionObj) => {
-      this.setState({ ...this.state, currentRegionLyric: " " });
+      this.editingRegion = null;
+      this.setState({
+        ...this.state,
+        currentRegionLyric: " ",
+        isAddLyricMode: false,
+      });
     });
   }
 
@@ -159,17 +178,27 @@ class LyricsEditor extends Component {
     });
   }
 
-  handleSaveLyricRegionBtnClick = (event) => {
-    event.preventDefault();
+  onSaveLyricRegionBtnClick = (value) => {
     this.setState({ ...this.state, isAddLyricMode: false });
-    this.editingRegion.update({
-      data: {
-        note: this.lyricTextAreaRef.current.value,
-      },
-    });
+    if (value) {
+      this.editingRegion.update({
+        data: {
+          note: value,
+        },
+      });
+      this.saveRegions();
+    }
 
+    this.editingRegion = null;
+  };
+
+  onRemoveLyricRegionBtnClick = (event) => {
+    this.setState({ ...this.state, isAddLyricMode: false });
+    if (this.editingRegion.id) {
+      this.waveform.regions.list[this.editingRegion.id].remove();
+    }
     this.saveRegions();
-    console.log(localStorage.regions);
+    this.editingRegion = null;
   };
 
   handleSliderChanging = (newValue) => {
@@ -178,7 +207,7 @@ class LyricsEditor extends Component {
     console.log(newValue);
   };
 
-  handleSaveRegionsBtnClick = () => {
+  handleSaveAllRegionsBtnClick = () => {
     console.log("haha");
     this.saveRegions();
   };
@@ -201,40 +230,49 @@ class LyricsEditor extends Component {
             }}
           </FirebaseContext.Consumer>
         ) : null}
+
         <div
           className="save-regions-btn"
-          onClick={this.handleSaveRegionsBtnClick}
+          onClick={this.handleSaveAllRegionsBtnClick}
         >
           <FaSave size={30} color={"white"} />
         </div>
-        <div className="lyrics-text-editor">
-          <Editor
-            editorState={this.state.editorState}
-            onChange={this.onChange}
-          />
+
+        <div className="ms-row" style={{ justifyContent: "space-between" }}>
+          <div className="lyrics-text-editor ms-50vw">
+            <Editor
+              editorState={this.state.editorState}
+              onChange={this.onLyricsEditorChange}
+            />
+          </div>
+          <div className="ms-col ms-50vw" style={{ height: 600 }}>
+            <div className="lyrics-region-display-section">
+              {isAddLyricMode ? (
+                <div className="lyrics-region-editing-section">
+                  <LyricsRegionEditor
+                    onRemoveLyricRegionBtnClick={
+                      this.onRemoveLyricRegionBtnClick
+                    }
+                    onSaveLyricRegionBtnClick={this.onSaveLyricRegionBtnClick}
+                  />
+                </div>
+              ) : null}
+              <div className="current-lyrics-region-display-container">
+                <div className="current-lyric-chunk">
+                  <div>{currentRegionLyric}</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
         <div className="lyrics-editor-waveform-container">
-          {/* <div></div> */}
           {!isWaveFormReady ? (
             <ClipLoader
               size={150}
               color={"#baeabc"}
               loading={this.state.loading}
             />
-          ) : null}
-          <div className="current-lyric-chunk">{currentRegionLyric}</div>
-          {isAddLyricMode ? (
-            <div>
-              <textarea
-                ref={this.lyricTextAreaRef}
-                value={this.state.value}
-                // onChange={this.handleChange}
-              />
-              <div
-                className="lyric-submit-btn"
-                onClick={this.handleSaveLyricRegionBtnClick}
-              />
-            </div>
           ) : null}
           <div className="media-controls-slider-container">
             <Slider

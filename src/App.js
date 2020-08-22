@@ -6,12 +6,12 @@ import "./App.css";
 import SoundManager from "./SoundManager";
 import backgroundImage from "./img1.webp";
 import BackgroundImage from "./BackgroundImage";
-import MediaControls from "./MediaControls";
+import MediaControls from "./MediaControls/MediaControls";
 import LyricsDisplay from "./Lyrics/LyricsDisplay/LyricsDisplay";
 import lyricsData from "./Lyrics/test.json";
 import { FaEdit } from "react-icons/fa";
 import LyricsEditor from "./Lyrics/LyricsEditor/LyricsEditor";
-import localUrl from "./mercy.mp3"
+import localUrl from "./mercy.mp3";
 
 const url =
   "https://firebasestorage.googleapis.com/v0/b/music-central-dfb24.appspot.com/o/The%20World%20of%20Mercy.mp3?alt=media&token=d05fa80b-2547-4f87-9d82-6d00b5d7f3d5";
@@ -28,7 +28,7 @@ class App extends Component {
     };
     this.lastPlayedPostion = 0;
   }
-
+  
   handleSongPlaying = (status) => {
     this.setState({ ...this.state, lastPlayedPos: status.position });
   };
@@ -106,7 +106,7 @@ class App extends Component {
           </div>
           {isEditingMode ? (
             <div className="music-central-editor-container">
-              <LyricsEditor url={localUrl}/>
+              <LyricsEditor url={localUrl} />
             </div>
           ) : (
             <div className="music-central-player">

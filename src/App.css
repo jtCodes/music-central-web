@@ -124,3 +124,16 @@
 .ms-button {
   cursor: pointer;
 }
+
+.ms-row {
+  display: flex;
+}
+
+.ms-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.ms-50vw {
+  width: 50vw;
+}

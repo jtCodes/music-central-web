@@ -26,14 +26,16 @@
   background-color: rgba(195, 138, 138, 0.39) !important;
 }
 
-.lyric-submit-btn {
+.lyric-region-save-btn {
   width: 50px;
   height: 100px;
-  background-color: blueviolet;
+  background-color: rgb(85, 141, 80);
 }
 
-.current-lyric-chunk {
-  color: white;
+.lyric-region-remove-btn {
+  width: 50px;
+  height: 100px;
+  background-color: rgb(105, 33, 33);
 }
 
 .lyrics-text-editor {
@@ -48,4 +50,21 @@
 .save-regions-btn {
   cursor: pointer;
   width: max-content;
+}
+
+.lyrics-region-editing-section {
+  position: absolute;
+  height: max-content;
+  z-index: 2;
+}
+
+.current-lyrics-region-display-container {
+  position: absolute;
+}
+
+.current-lyric-chunk {
+  color: white;
+  display: flex;
+  align-items: center;
+  height: 600px;
 }
