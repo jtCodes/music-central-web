@@ -1,0 +1,44 @@
+.song-list-item-container {
+  font-size: 11pt;
+  height: 80px;
+  width: 500px;
+  /* padding: 5px; */
+  display: grid;
+  grid-gap: 0px;
+  grid-template-areas: "albumArt" "nameArtist" "album" "time";
+  grid-template-columns: 1fr 2fr 2fr 1fr;
+  grid-template-areas: "albumArt nameArtist album time";
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.song-list-item-album-art {
+  width: 60px;
+  height: 60px;
+  background-color: aqua;
+  border-radius: 5px;
+  grid-area: albumArt;
+}
+
+.song-list-item-name-artist {
+  overflow: hidden;
+  width: 100px;
+  grid-area: nameArtist;
+  white-space: nowrap;
+}
+
+.song-list-item-name {
+  font-weight: 600;
+}
+
+.song-list-item-album {
+  width: 100px;
+  grid-area: album;
+  font-weight: 600;
+}
+
+.song-list-item-time {
+  width: 50px;
+  grid-area: time;
+  color: rgba(128, 128, 128, 0.486);
+}

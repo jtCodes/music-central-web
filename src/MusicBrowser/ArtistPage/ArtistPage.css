@@ -1,0 +1,92 @@
+* {
+  box-sizing: border-box;
+  /* color: gray; */
+}
+
+.artist-page-section-title {
+  font-weight: 600;
+  font-size: 16pt;
+}
+
+.artist-page-wrapper {
+  max-width: 1500px;
+  height: 100vh;
+  margin: 0 auto;
+  font: 1.2em arial, sans-serif;
+  display: grid;
+  grid-gap: 0px;
+  grid-template-areas:
+    "header"
+    "nav"
+    "content"
+    "sidebar"
+    "ad"
+    "footer";
+}
+
+.artist-page-wrapper > * {
+  /* border: 2px solid #f08c00; */
+  background-color: rgb(245, 245, 245);
+  /* border-radius: 5px; */
+  padding: 10px;
+}
+
+.artist-page-main-head {
+  min-height: 500px;
+  grid-area: header;
+  background-size: cover;
+  background-position-y: center;
+}
+
+.artist-page-content {
+  grid-area: content;
+  min-height: 800px;
+  padding: 50px;
+}
+
+.artist-page-side {
+  padding: 50px;
+  grid-area: sidebar;
+}
+
+.artist-page-ad {
+  grid-area: ad;
+}
+
+.artist-page-main-footer {
+  grid-area: footer;
+  /* background-color: darkgray; */
+}
+
+.artist-page-top-songs-section {
+  padding: 10px;
+}
+
+@media (min-width: 500px) {
+  .artist-page-wrapper {
+    grid-template-columns: 1fr 3fr;
+    grid-template-areas:
+      "header  header"
+      "nav     nav"
+      "sidebar content"
+      "ad      footer";
+  }
+  .artist-page-main-nav > ul {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 700px) {
+  .artist-page-wrapper {
+    grid-template-columns: 1.5fr 4fr 3fr;
+    grid-template-areas:
+      "nav header  header"
+      "nav content sidebar"
+      "nav content ad"
+      "nav footer  footer";
+  }
+  nav ul {
+    flex-direction: column;
+  }
+}
