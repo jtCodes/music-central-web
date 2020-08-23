@@ -1,0 +1,27 @@
+.album-list-item-container {
+  padding: 10px;
+}
+
+.album-list-item-album-art {
+  width: 160px;
+  height: 160px;
+  border-radius: 5px;
+}
+
+.album-list-item-album-detail-container {
+  margin-top: 5px;
+}
+
+.album-list-item-album-name {
+  width: 100px;
+  grid-area: album;
+  font-weight: 600;
+}
+
+.album-list-item-album-artist {
+  color: rgba(128, 128, 128, 0.39);
+}
+
+.album-list-item-album-year-type {
+  color: rgba(128, 128, 128, 0.39);
+}

@@ -1,0 +1,6 @@
+.album-list-container {
+  font-size: 11pt;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}

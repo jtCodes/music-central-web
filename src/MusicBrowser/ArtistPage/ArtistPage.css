@@ -9,7 +9,7 @@
 }
 
 .artist-page-wrapper {
-  max-width: 1500px;
+  width: 1500px;
   height: 100vh;
   margin: 0 auto;
   font: 1.2em arial, sans-serif;
@@ -22,6 +22,12 @@
     "sidebar"
     "ad"
     "footer";
+  grid-template-columns: 1.5fr 4fr 3fr;
+  grid-template-areas:
+    "nav header  header"
+    "nav content sidebar"
+    "nav content ad"
+    "nav footer  footer";
 }
 
 .artist-page-wrapper > * {
@@ -38,7 +44,28 @@
   background-position-y: center;
 }
 
+.artist-page-header-artist-name{
+  width: max-content;
+  padding: 40px;
+  background-color: rgba(184, 184, 184, 0.658);
+  margin-top: 20px;
+  font-weight: 900;
+  color: white;
+  font-size: 3.5em;
+}
+
+.artist-page-header-artist-summary{
+  font-weight: 600;
+  color: white;
+  font-size: 11pt;
+  padding: 40px;
+  width: 600px;
+  background-color: rgba(184, 184, 184, 0.658);
+  margin-top: 50px;
+}
+
 .artist-page-content {
+  position: relative;
   grid-area: content;
   min-height: 800px;
   padding: 50px;
@@ -62,6 +89,10 @@
   padding: 10px;
 }
 
+.artist-page-new-release-section-title{
+  margin-left: 10px
+}
+
 @media (min-width: 500px) {
   .artist-page-wrapper {
     grid-template-columns: 1fr 3fr;
@@ -79,14 +110,14 @@
 
 @media (min-width: 700px) {
   .artist-page-wrapper {
-    grid-template-columns: 1.5fr 4fr 3fr;
+    grid-template-columns: 1.5fr 4fr 2.5fr;
     grid-template-areas:
       "nav header  header"
       "nav content sidebar"
       "nav content ad"
       "nav footer  footer";
   }
-  nav ul {
+  .artist-page-main-nav > ul {
     flex-direction: column;
   }
 }
