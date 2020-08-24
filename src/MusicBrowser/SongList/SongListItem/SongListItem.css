@@ -16,15 +16,15 @@
   width: 60px;
   height: 60px;
   background-color: aqua;
-  border-radius: 5px;
+  border-radius: 1px;
   grid-area: albumArt;
 }
 
 .song-list-item-name-artist {
   overflow: hidden;
-  width: 100px;
+  width: 150px;
   grid-area: nameArtist;
-  white-space: nowrap;
+  /* white-space: nowrap; */
 }
 
 .song-list-item-name {
@@ -36,7 +36,7 @@
 }
 
 .song-list-item-album {
-  width: 100px;
+  width: 150px;
   grid-area: album;
   font-weight: 600;
 }

@@ -16,7 +16,7 @@ export default class AlbumListItem extends Component {
           alt="album art"
         />
         <div className="album-list-item-album-detail-container">
-          <div className="album-list-item-album-name">{data.album}</div>
+          <div className="album-list-item-album-name truncated">{data.album}</div>
           {/* <div className="album-list-item-album-artist">{data.artist}</div> */}
           <div className="album-list-item-album-year-type">
             {data.type} • {data.releaseYear}

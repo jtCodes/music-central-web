@@ -1,3 +1,9 @@
+.music-browser-nav-sidebar {
+  position: fixed;
+  width: 282px;
+  height: 100vh;
+}
+
 .music-browser-nav-sidebar-search-input {
   border: none;
   padding: 10px;

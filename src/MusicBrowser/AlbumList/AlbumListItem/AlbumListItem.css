@@ -5,7 +5,7 @@
 .album-list-item-album-art {
   width: 160px;
   height: 160px;
-  border-radius: 5px;
+  border-radius: 1px;
 }
 
 .album-list-item-album-detail-container {
@@ -13,9 +13,10 @@
 }
 
 .album-list-item-album-name {
-  width: 100px;
+  width: 150px;
   grid-area: album;
   font-weight: 600;
+  overflow:hidden; 
 }
 
 .album-list-item-album-artist {

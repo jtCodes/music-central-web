@@ -17,8 +17,8 @@ export default class SongListItem extends Component {
             alt="album art"
           />
         </div>
-        <div className=" song-list-item-name-artist center-vertically">
-          <div className="song-list-item-name">{data.name}</div>
+        <div className=" song-list-item-name-artist center-vertically truncated">
+          <div className="song-list-item-name truncated">{data.name}</div>
           {/* <div className="song-list-item-artist">{data.artist}</div> */}
         </div>
         <div className=" song-list-item-album center-vertically">

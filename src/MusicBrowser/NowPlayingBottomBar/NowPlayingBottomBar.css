@@ -1,5 +1,5 @@
 .now-playing-bottom-bar-container {
-  position: absolute;
+  position: fixed;
   bottom: 0px;
   left: 0px;
   height: 100px;
@@ -9,8 +9,8 @@
 }
 
 .now-playing-bottom-bar {
-  margin-left: 280px;
-  width: 1218px;
+  margin-left: 283px;
+  width: 1219px;
   height: 100px;
   background-color: rgb(180, 146, 163);
 }
