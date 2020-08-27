@@ -12,6 +12,10 @@
   padding-bottom: 5px;
 }
 
+.song-list-item-album-art-container {
+  cursor: pointer;
+}
+
 .song-list-item-album-art {
   width: 60px;
   height: 60px;

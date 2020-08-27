@@ -8,12 +8,15 @@ export default class SongList extends Component {
   static propTypes = {};
 
   render() {
-    const { data } = this.props;
+    const { data, onSongPlayRequest } = this.props;
 
     return (
       <div className="song-list-container">
         {data.map((songListItemData) => (
-          <SongListItem data={songListItemData} />
+          <SongListItem
+            data={songListItemData}
+            onSongPlayRequest={onSongPlayRequest}
+          />
         ))}
       </div>
     );

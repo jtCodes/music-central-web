@@ -29,7 +29,7 @@ export default class ArtistPage extends Component {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, onSongPlayRequest } = this.props;
     const bannerTextBackgroundColor = colorAlpha(
       data.bannerColor,
       this.bannerTextBackgroundAlpha
@@ -71,7 +71,10 @@ export default class ArtistPage extends Component {
           <article className="artist-page-content">
             <section className="artist-page-top-songs-section">
               <div className="artist-page-section-title">Top Songs</div>
-              <SongList data={songListTestData[data.artistId]} />
+              <SongList
+                data={songListTestData[data.artistId]}
+                onSongPlayRequest={onSongPlayRequest}
+              />
             </section>
           </article>
           <aside className="artist-page-side">

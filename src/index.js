@@ -10,8 +10,8 @@ import Firebase, { FirebaseContext } from "./Firebase";
 
 ReactDOM.render(
   <FirebaseContext.Provider value={new Firebase()}>
-    {/* <App /> */}
-    <ArtistPage data={artistTestData[window.location.pathname.split("/")[1]]} />
+    <App />
+    {/* <ArtistPage data={artistTestData[window.location.pathname.split("/")[1]]} /> */}
   </FirebaseContext.Provider>,
   document.getElementById("root")
 );

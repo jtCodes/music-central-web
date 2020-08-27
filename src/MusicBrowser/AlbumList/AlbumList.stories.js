@@ -12,6 +12,6 @@ const Template = (args) => <AlbumList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  data: commonCase,
+  data: commonCase[1],
   width: 340
 };

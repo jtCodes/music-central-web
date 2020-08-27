@@ -28,6 +28,8 @@ class Firebase {
   }
 
   getSongLyrics = (songName) => this.db.ref("song/" + songName);
+
+  getSongDetails = (songName) => this.db.ref("song/" + songName);
 }
 
 export default Firebase;

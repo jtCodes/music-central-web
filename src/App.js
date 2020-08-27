@@ -12,6 +12,9 @@ import lyricsData from "./Lyrics/test.json";
 import { FaEdit } from "react-icons/fa";
 import LyricsEditor from "./Lyrics/LyricsEditor/LyricsEditor";
 import localUrl from "./mercy.mp3";
+import * as artistTestData from "./MusicBrowser/ArtistPage/TestData.js";
+import ArtistPage from "./MusicBrowser/ArtistPage/ArtistPage";
+import { FirebaseContext } from "./Firebase";
 
 const url =
   "https://firebasestorage.googleapis.com/v0/b/music-central-dfb24.appspot.com/o/The%20World%20of%20Mercy.mp3?alt=media&token=d05fa80b-2547-4f87-9d82-6d00b5d7f3d5";
@@ -25,10 +28,12 @@ class App extends Component {
       playStatus: Sound.status.PAUSED,
       lastPlayedPos: 0,
       seekToPos: 0,
+      currentSongUrl: undefined,
     };
     this.lastPlayedPostion = 0;
+    this.currentSongUrl = undefined;
   }
-  
+
   handleSongPlaying = (status) => {
     this.setState({ ...this.state, lastPlayedPos: status.position });
   };
@@ -63,6 +68,18 @@ class App extends Component {
       seekToPos: this.state.lastPlayedPos,
     });
 
+    // this.firebase.getSongLyrics("how you like that").once(
+    //   "value",
+    //   (snapshot) => {
+    //     if (!this.currentSongUrl) {
+    //       this.currentSongUrl = snapshot.val().url;
+    //     }
+    //   },
+    //   (errorObject) => {
+    //     console.log("The read failed: " + errorObject.code);
+    //   }
+    // );
+
     // this.lastPlayedPostion = this.state.lastPlayedPos
   };
 
@@ -86,6 +103,31 @@ class App extends Component {
     });
   };
 
+  handleSongPlayRequest = (songId) => {
+    this.firebase.getSongLyrics(songId).once(
+      "value",
+      (snapshot) => {
+        if (snapshot.val().streamUrl !== this.state.currentSongUrl) {
+          this.setState({
+            ...this.state,
+            currentSongUrl: snapshot.val().streamUrl,
+            playStatus: Sound.status.PLAYING,
+            lastPlayedPos: 0,
+            seekToPos: 0,
+          });
+        } else {
+          this.setState({
+            ...this.state,
+            playStatus: Sound.status.PLAYING,
+          });
+        }
+      },
+      (errorObject) => {
+        console.log("The read failed: " + errorObject.code);
+      }
+    );
+  };
+
   render() {
     const {
       playStatus,
@@ -93,10 +135,18 @@ class App extends Component {
       songDurInMs,
       seekToPos,
       isEditingMode,
+      currentSongUrl,
     } = this.state;
     return (
       <div className="music-central-app-container">
-        <BackgroundImage backgroundImage={backgroundImage} />
+        {!this.firebase ? (
+          <FirebaseContext.Consumer>
+            {(firebase) => {
+              this.firebase = firebase;
+            }}
+          </FirebaseContext.Consumer>
+        ) : null}
+        {/* <BackgroundImage backgroundImage={backgroundImage} /> */}
         <div className="music-central-app">
           <div
             className="lyrics-editing-btn"
@@ -110,7 +160,7 @@ class App extends Component {
             </div>
           ) : (
             <div className="music-central-player">
-              <div className="music-central-album-art">
+              {/* <div className="music-central-album-art">
                 <img
                   className="ms-box-shadow1"
                   src={backgroundImage}
@@ -130,9 +180,24 @@ class App extends Component {
                     handleSliderChanging={this.handleSliderChanging}
                   />
                 </div>
+              </div> */}
+              <ArtistPage
+                data={artistTestData[window.location.pathname.split("/")[1]]}
+                onSongPlayRequest={this.handleSongPlayRequest}
+              />
+              <div className="ms-bottom ms-100vw">
+                <div className="ms-center">
+                  <MediaControls
+                    isPlaying={playStatus === Sound.status.PLAYING}
+                    lastPlayedPos={lastPlayedPos}
+                    songDurInMs={songDurInMs}
+                    handlePlayButtonClick={this.handlePlayButtonClick}
+                    handleSliderChanging={this.handleSliderChanging}
+                  />
+                </div>
               </div>
               <SoundManager
-                url={localUrl}
+                url={currentSongUrl}
                 playStatus={playStatus}
                 playFromPosition={seekToPos}
                 onLoading={this.handleSongLoading}

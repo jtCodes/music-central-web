@@ -12,5 +12,5 @@ const Template = (args) => <SongList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  data: commonCase,
+  data: commonCase[1],
 };

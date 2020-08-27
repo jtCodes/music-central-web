@@ -10,7 +10,10 @@ export default class SongListItem extends Component {
 
     return (
       <div className="song-list-item-container">
-        <div className="center-vertically">
+        <div
+          className="song-list-item-album-art-container center-vertically"
+          onClick={() => this.props.onSongPlayRequest(data.name)}
+        >
           <img
             className="song-list-item-album-art center-vertically"
             src={data.albumArt}
@@ -25,7 +28,7 @@ export default class SongListItem extends Component {
           <div>{data.album}</div>
         </div>
         <div className="song-list-item-time center-vertically">
-          <div>{data.timeDisplay}</div> 
+          <div>{data.timeDisplay}</div>
         </div>
       </div>
     );
