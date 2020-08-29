@@ -159,7 +159,7 @@ class App extends Component {
               <LyricsEditor url={localUrl} />
             </div>
           ) : (
-            <div className="music-central-player">
+            <>
               {/* <div className="music-central-album-art">
                 <img
                   className="ms-box-shadow1"
@@ -205,7 +205,7 @@ class App extends Component {
                 onFinishedPlaying={this.handleSongFinishedPlaying}
                 onLoad={this.handleSoundLoaded}
               />
-            </div>
+            </>
           )}
         </div>
       </div>
