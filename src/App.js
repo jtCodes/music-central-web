@@ -11,7 +11,6 @@ import LyricsDisplay from "./Lyrics/LyricsDisplay/LyricsDisplay";
 import lyricsData from "./Lyrics/test.json";
 import { FaEdit } from "react-icons/fa";
 import LyricsEditor from "./Lyrics/LyricsEditor/LyricsEditor";
-import localUrl from "./mercy.mp3";
 import * as artistTestData from "./MusicBrowser/ArtistPage/TestData.js";
 import ArtistPage from "./MusicBrowser/ArtistPage/ArtistPage";
 import { FirebaseContext } from "./Firebase";
@@ -156,7 +155,7 @@ class App extends Component {
           </div>
           {isEditingMode ? (
             <div className="music-central-editor-container">
-              <LyricsEditor url={localUrl} />
+              <LyricsEditor url={url} />
             </div>
           ) : (
             <div className="music-central-player">
